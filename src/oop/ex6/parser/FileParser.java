@@ -1,6 +1,7 @@
 package oop.ex6.parser;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 public class FileParser {
 
+    private static final String FILE_NOT_FOUND_MESSAGE = "Couldn't find source file %s!";
     private static final String IO_ERROR_MESSAGE = "An error occurred while reading file %s!";
 
     // TODO: might be better to use a linked list
@@ -15,7 +17,7 @@ public class FileParser {
 
     private int currentLineIndex;
 
-    public FileParser(String sourceFile) throws FileNotFoundException {
+    public FileParser(String sourceFile) throws IOException {
         this.lines = new ArrayList<>();
 
         this.currentLineIndex = 0;
@@ -26,8 +28,10 @@ public class FileParser {
             while ((line = bufferedReader.readLine()) != null) {
                 this.lines.add(line);
             }
+        } catch(FileNotFoundException exception) {
+            throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, sourceFile));
         } catch(IOException exception) {
-            throw new FileNotFoundException(String.format(IO_ERROR_MESSAGE, sourceFile));
+            throw new IOException(String.format(IO_ERROR_MESSAGE, sourceFile));
         }
     }
 
@@ -51,5 +55,4 @@ public class FileParser {
     public void reset() {
         this.currentLineIndex = 0;
     }
-
 }

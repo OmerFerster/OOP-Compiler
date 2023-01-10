@@ -1,6 +1,7 @@
 import oop.ex6.main.Result;
-import oop.ex6.parser.FileNotFoundException;
 import oop.ex6.parser.FileParser;
+
+import java.io.IOException;
 
 public class FileParserTest {
 
@@ -12,7 +13,7 @@ public class FileParserTest {
                 System.out.println(fileParser.getCurrentLine());
                 fileParser.advance();
             }
-        } catch (FileNotFoundException exception) {
+        } catch (IOException exception) {
             System.out.println(Result.IO_ERROR);
             System.err.println(exception.getMessage());
         }

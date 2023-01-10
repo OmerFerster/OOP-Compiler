@@ -4,3 +4,19 @@
 
 
 Class that parses a single line (using regex) and returns the type of line
+
+
+
+///
+1 - while statement implement Compileable
+2 - if statement implement Compileable
+3 - method call implement Compileable
+4 - assighment implement Compileable
+5 - var dec implement Compileable
+6 - global var dec implement Compileable
+7 - method dec implement Compileable
+
+// inferface Compileable {
+    void compile(param 1..);
+
+}

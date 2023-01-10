@@ -1,11 +1,13 @@
 package oop.ex6.checker.variables;
 
+import oop.ex6.checker.ITable;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class VariablesTable {
+public class VariablesTable implements ITable<Variable> {
 
     private final Map<String, Variable> globalVariables;
     private final LinkedList<Map<String, Variable>> scopeVariables;
@@ -32,15 +34,23 @@ public class VariablesTable {
     }
 
 
-    public void addVariable(String name, VariableType type, boolean initialized, boolean isFinal) {
-        Variable variable = new Variable(type, initialized, isFinal);
+    public Variable addVariable(String name, VariableType variableType, boolean initialized,
+                                boolean isFinal) throws VariableAlreadyDefinedException {
+        Variable variable = new Variable(variableType, initialized, isFinal);
 
-        // TODO: if failed might wanna throw an exception
+        boolean succeeded;
+
         if (this.scopeVariables.size() == 0) {
-            this.addGlobalVariable(name, variable);
+            succeeded = this.addGlobalVariable(name, variable);
         } else {
-            this.addLocalVariable(name, variable);
+            succeeded = this.addLocalVariable(name, variable);
         }
+
+        if(!succeeded) {
+            throw new VariableAlreadyDefinedException(name);
+        }
+
+        return variable;
     }
 
     private boolean addGlobalVariable(String name, Variable variable) {
@@ -62,7 +72,11 @@ public class VariablesTable {
     }
 
 
-    public Variable getVariableByName(String name) {
+    public boolean exists(String name) {
+        return this.getByName(name) != null;
+    }
+
+    public Variable getByName(String name) {
         if (this.scopeVariables.size() > 0) {
             Iterator<Map<String, Variable>> scopeIterator = this.scopeVariables.descendingIterator();
 
@@ -85,5 +99,3 @@ public class VariablesTable {
         return null;
     }
 }
-
-// TODO Keep track of global variables initialized inside the current function
