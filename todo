@@ -1,0 +1,6 @@
+- loop over all lines and initialize global variables
+- loop over all lines and save all methods (with accepted parameters)
+- loop over all lines and check if the code is valid
+
+
+Class that parses a single line (using regex) and returns the type of line
