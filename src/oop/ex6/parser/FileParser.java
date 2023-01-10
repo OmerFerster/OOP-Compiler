@@ -7,16 +7,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class that parses a line into an iterable list
+ */
 public class FileParser {
 
     private static final String FILE_NOT_FOUND_MESSAGE = "Couldn't find source file %s!";
     private static final String IO_ERROR_MESSAGE = "An error occurred while reading file %s!";
 
-    // TODO: might be better to use a linked list
     private final List<String> lines;
 
     private int currentLineIndex;
 
+    /**
+     * Receives a file to read and parse
+     *
+     * @param sourceFile     File to parse
+     * @throws IOException   Might throw an IOException of parse failed for any reason
+     */
     public FileParser(String sourceFile) throws IOException {
         this.lines = new ArrayList<>();
 
@@ -36,10 +44,20 @@ public class FileParser {
     }
 
 
+    /**
+     * Returns whether we have more lines to go throw in the file
+     *
+     * @return   Whether there are more lines to read
+     */
     public boolean hasMoreLines() {
         return (this.currentLineIndex < this.lines.size() - 1);
     }
 
+    /**
+     * Returns the current line in the file
+     *
+     * @return   Current line
+     */
     public String getCurrentLine() {
         if ((this.currentLineIndex >= this.lines.size()) || (this.currentLineIndex < 0)) {
             return null;
@@ -48,10 +66,16 @@ public class FileParser {
         return this.lines.get(this.currentLineIndex);
     }
 
+    /**
+     * Advances the file to the next line
+     */
     public void advance() {
         this.currentLineIndex++;
     }
 
+    /**
+     * Resets the line pointer back to the first line
+     */
     public void reset() {
         this.currentLineIndex = 0;
     }

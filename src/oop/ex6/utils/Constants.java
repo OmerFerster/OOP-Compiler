@@ -1,5 +1,8 @@
 package oop.ex6.utils;
 
+/**
+ * A class that's used to store all constant variables in the code
+ */
 public class Constants {
 
     public static final String FINAL_KEYWORD = "final";

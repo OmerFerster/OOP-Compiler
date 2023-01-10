@@ -1,29 +1,25 @@
 package oop.ex6.checker.methods;
 
+/**
+ * An enum representing all allowed return types in sjava
+ */
 public enum ReturnType {
 
     VOID("void");
 
 
     private final String declarator;
-    private final ReturnType[] acceptedTypes;
 
-    ReturnType(String declarator, ReturnType... acceptedTypes) {
+    ReturnType(String declarator) {
         this.declarator = declarator;
-        this.acceptedTypes = acceptedTypes;
     }
 
+    /**
+     * Returns the keyword used to reference the return type
+     *
+     * @return   Declarator keyword
+     */
     public String getDeclarator() {
         return this.declarator;
-    }
-
-    public boolean isAccepted(ReturnType variableType) {
-        for(ReturnType accepted : this.acceptedTypes) {
-            if(accepted == variableType) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

@@ -4,7 +4,9 @@ import oop.ex6.utils.RegexConstants;
 
 import java.util.regex.Pattern;
 
-
+/**
+ * An enum used to distinguish between different lines
+ */
 public enum LineType {
 
     EMPTY_LINE(RegexConstants.EMPTY_LINE),
@@ -35,10 +37,19 @@ public enum LineType {
 
     private final Pattern pattern;
 
+    /**
+     * @param regex   Regex to use to determine the type of a given line
+     */
     LineType(String regex) {
         this.pattern = Pattern.compile(regex);
     }
 
+
+    /**
+     * Returns the pattern that matches the LineType object
+     *
+     * @return   LineType's regex pattern
+     */
     public Pattern getPattern() {
         return this.pattern;
     }

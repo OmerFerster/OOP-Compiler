@@ -1,14 +1,14 @@
 package oop.ex6.utils;
 
+/**
+ * A class that's used to store all constant regexes in the code
+ */
 public class RegexConstants {
-
-    // TODO: change spaces to support multiple escape characters.
-    // Example: "final int x;" and "final   \r\t  int    x;" should work
 
     public static final String EMPTY_LINE = "\\s*";
     public static final String COMMENT_LINE = "//.*";
 
-    public static final String RETURN = "\\s*return\\s*;\\s*";
+    public static final String RETURN = "\\s*" + Constants.RETURN_KEYWORD + "\\s*;\\s*";
     public static final String BLOCK_CLOSER = "\\s*}\\s*";
 
     public static final String PARAMETER_TYPES = "(" +
@@ -25,18 +25,18 @@ public class RegexConstants {
     public static final String IDENTIFIER = "(([a-zA-Z]|_\\w)\\w*)";
     public static final String METHOD_IDENTIFIER = "(([a-zA-Z])\\w*)";
 
-    public static final String OPTIONAL_FINAL = "(final\\s*){0,1}";
+    public static final String OPTIONAL_FINAL = "(" + Constants.FINAL_KEYWORD + "\\s*){0,1}";
 
     public static final String INT_VALUE = "[+-]{0,1}\\d+";
     public static final String DOUBLE_VALUE = "[+-]{0,1}(\\d+([\\.]\\d*){0,1}|\\d*[\\.]\\d+)";
     public static final String CHAR_VALUE = "'.'";
+    public static final String STRING_VALUE = "\".*\"";
     public static final String BOOLEAN_VALUE = "(" +
             Constants.TRUE_KEYWORD + "|" +
             Constants.FALSE_KEYWORD + "|" +
             INT_VALUE + "|" +
             DOUBLE_VALUE +
             ")";
-    public static final String STRING_VALUE = "\".*\"";
 
     public static final String ANY_VALUE = "(" +
             IDENTIFIER + "|" +
@@ -96,8 +96,10 @@ public class RegexConstants {
 
     private static final String CONDITIONAL_BLOCK = "\\s*%s\\s*\\(\\s*" + CONDITION + "\\s*\\)\\s*{\\s*";
 
-    public static final String IF_STATEMENT = String.format(CONDITIONAL_BLOCK, "if");
-    public static final String WHILE_STATEMENT = String.format(CONDITIONAL_BLOCK, "while");
+    public static final String IF_STATEMENT = String.format(CONDITIONAL_BLOCK,
+            Constants.IF_KEYWORD);
+    public static final String WHILE_STATEMENT = String.format(CONDITIONAL_BLOCK,
+            Constants.WHILE_KEYWORD);
 
 
 
