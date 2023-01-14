@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,7 +35,8 @@ public class FileParser {
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-                this.lines.add(line);
+                // Splitting lines by \n and \r
+                this.lines.addAll(Arrays.asList(line.split("[\n\r]")));
             }
         } catch(FileNotFoundException exception) {
             throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, sourceFile));
