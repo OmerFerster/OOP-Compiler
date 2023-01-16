@@ -2,7 +2,9 @@ package oop.ex6.checker.methods;
 
 import oop.ex6.checker.variables.Variable;
 import oop.ex6.checker.variables.VariableType;
+import oop.ex6.utils.Pair;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,9 +14,9 @@ public class Method {
 
     private final ReturnType returnType;
 
-    private final Map<String, Variable> parameters;
+    private final List<Pair<String, Variable>> parameters;
 
-    public Method(ReturnType returnType, Map<String, Variable> parameters) {
+    public Method(ReturnType returnType, List<Pair<String, Variable>> parameters) {
         this.returnType = returnType;
 
         this.parameters = parameters;
@@ -31,7 +33,7 @@ public class Method {
     /**
      * @return   The method's parameter list with their respected name
      */
-    public Map<String, Variable> getParameters() {
+    public List<Pair<String, Variable>> getParameters() {
         return this.parameters;
     }
 }

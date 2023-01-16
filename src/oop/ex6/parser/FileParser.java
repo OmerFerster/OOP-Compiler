@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,7 +53,7 @@ public class FileParser {
      * @return   Whether there are more lines to read
      */
     public boolean hasMoreLines() {
-        return (this.currentLineIndex < this.lines.size() - 1);
+        return (this.currentLineIndex < this.lines.size());
     }
 
     /**

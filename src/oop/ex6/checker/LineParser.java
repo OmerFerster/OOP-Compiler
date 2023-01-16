@@ -6,12 +6,10 @@ import oop.ex6.checker.methods.MethodsTable;
 import oop.ex6.checker.methods.ReturnType;
 import oop.ex6.checker.variables.*;
 import oop.ex6.utils.Constants;
+import oop.ex6.utils.Pair;
 import oop.ex6.utils.RegexConstants;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,35 +30,40 @@ public class LineParser {
     public static List<Variable> parseVarDeclarationLine(VariablesTable variables, String line)
             throws IllegalLineException, DefinitionException {
 
-        // Splits the line into all tokens, removing unnecessary spaces, commas and ;
+        // Splits the line into all equations, while removing commas between equations
+        // Example: "final  int  a = b, c = -5, e = 5"   ->  [final  int  a=b, c="1 2", e=5]
         String[] tokens = line.replaceAll("\\s*=\\s*", "=")
-                .split("(\\s*,\\s*|\\s+|\\s*;\\s*)");
+                .split("(\\s*,\\s*|\\s*;\\s*)");
 
+        // Checking if the declaration is final & saving its type
+        String[] data = tokens[0].split("\\s+");
 
-
-        boolean isFinal = tokens[0].equals(Constants.FINAL_KEYWORD);
-
-        VariableType variableType = VariableType.fromValue(isFinal ? tokens[1] : tokens[0]);
+        boolean isFinal = data[0].equals(Constants.FINAL_KEYWORD);
+        VariableType variableType = VariableType.fromValue(isFinal ? data[1] : data[0]);
         // TODO: throw parse exception if variableType == null
+
+        // "Fixing" first token - removing (final) and <type>
+        tokens[0] = tokens[0].replaceAll(data[0], "");
+        tokens[0] = isFinal ? tokens[0].replaceAll(data[1], "") : tokens[0];
+        tokens[0] = tokens[0].strip();
+
 
         List<Variable> declaredVariables = new ArrayList<>();
 
         // Loops over all declarations, except for (final) [type] and ';'
-        for (int i = (isFinal ? 2 : 1); i < tokens.length; i++) {
-            String token = tokens[i];
-
+        for (String token : tokens) {
             // TODO: create variable object and use #variable.initialize instead of checking by hand
             // the 2nd exception
 
             boolean isInitialized = token.contains("=");
 
-            if(isInitialized) {
-                if(getAssignmentType(token.split("=")[1], variables) == VariableType.IDENTIFIER) {
-                    if(variables.getByName(token.split("=")[1]).getType() != variableType) {
+            if (isInitialized) {
+                if (getExpressionType(token.split("=")[1], variables) == VariableType.IDENTIFIER) {
+                    if (variables.getByName(token.split("=")[1]).getType() != variableType) {
                         // TODO: throw exception
                         throw new IllegalLineException("Tried to initialize variable with wrong type!");
                     }
-                    if(!variables.getByName(token.split("=")[1]).isInitialized()) {
+                    if (!variables.getByName(token.split("=")[1]).isInitialized()) {
                         // TODO: throw exception
                         throw new IllegalLineException("Tried to initialize variable with wrong type!");
                     }
@@ -85,7 +88,7 @@ public class LineParser {
 
         String methodName = tokens[0].split(" ")[1];
 
-        Map<String, Variable> parameters = new HashMap<>();
+        List<Pair<String, Variable>> parameters = new ArrayList<>();
 
         for (int i = 1; i < tokens.length; i++) {
             String[] variableData = tokens[i].split(" ");
@@ -104,28 +107,98 @@ public class LineParser {
                 variableName = variableData[1];
             }
 
-            parameters.put(variableName, new Variable(variableType, true, isFinal));
+            parameters.add(new Pair<>(variableName, new Variable(variableType, true, isFinal)));
         }
 
         return methods.addMethod(methodName, returnType, parameters);
     }
 
     public static void parseVarAssignmentLine(VariablesTable variables, String line) throws IllegalLineException {
-        // Splits the line into all tokens, removing unnecessary spaces, commas and ;
-        String[] tokens = line.replaceAll("\\s+", "").split("[=;]");
+        // Splits the line into all equations, while removing commas between equations
+        // Example: "a = b, c = "1 2", e = 5"   ->  [a=b, c="1 2", e=5]
+        String[] tokens = line.replaceAll("\\s*=\\s*", "=")
+                .split("(\\s*,\\s*|;)");
 
-        Variable variable = variables.getByName(tokens[0]);
+        // Loops over every equation and initialize correct variable if the value is okay
+        // Meaning if value is of the same type/of an initialized variable with same type
+        for(String assignment : tokens) {
+            String assigned = assignment.split("=")[0];
+            String value = assignment.split("=")[1];
 
-        VariableType assignmentType = getAssignmentType(tokens[1], variables);
-        if(assignmentType == VariableType.IDENTIFIER) {
-            if(!variables.getByName(tokens[1]).isInitialized()) {
-                // todo: throw exception
+            Variable variable = variables.getByName(assigned);
+
+            VariableType assignmentType = getExpressionType(value, variables);
+            if(assignmentType == VariableType.IDENTIFIER) {
+                if(!variables.getByName(value).isInitialized()) {
+                    throw new IllegalLineException("variable is not initialized");
+                    // todo: throw exception
+                }
+
+                assignmentType = variables.getByName(value).getType();
             }
 
-            assignmentType = variables.getByName(tokens[1]).getType();
+            variable.initialize(assignmentType);
+        }
+    }
+
+    public static void parseConditionalStatement(VariablesTable variables, String line) throws IllegalLineException{
+        String[] conditions = line.split("(\\s+|if|while|\\(|\\)|\\|\\||\\&\\&|\\{)");
+
+        for(String condition : conditions) {
+            VariableType variableType = getExpressionType(condition, variables);
+
+            if(variableType == VariableType.IDENTIFIER) {
+                if(!VariableType.BOOLEAN.canAccept(variables.getByName(condition).getType())) {
+                    // TODO: Throw exception
+                    throw new IllegalLineException("variable type can't be converted to boolean");
+                }
+                if(!variables.getByName(condition).isInitialized()) {
+                    throw new IllegalLineException("variable is not initialized");
+                    // TODO: throw exception
+                }
+                continue;
+            }
+
+            if(!VariableType.BOOLEAN.canAccept(variableType)) {
+                // TODO: Throw exception - wrong type
+            }
+        }
+    }
+
+
+    public static void parseMethodCall(MethodsTable methods, VariablesTable variables, String line)
+            throws IllegalLineException{
+        String[] tokens = line.split("(\\s*\\(\\s*|\\s*,\\s*|\\s*\\)\\s*;\\s*)");
+
+        Method method = methods.getByName(tokens[0]);
+
+        if(tokens.length - 1 != method.getParameters().size()) {
+            throw new IllegalLineException("not enough parameters");
+            // TODO: throw not enough parameters
         }
 
-        variable.initialize(assignmentType);
+        for(int i = 1; i < tokens.length; i++) {
+            Variable parameter = method.getParameters().get(i-1).getValue();
+
+            VariableType variableType = getExpressionType(tokens[i], variables);
+
+            if(variableType == VariableType.IDENTIFIER) {
+                Variable variable = variables.getByName(tokens[i]);
+
+                if(!variable.isInitialized()) {
+                    // TODO: throw uninitialized error
+                    throw new IllegalLineException("Uninitialized parameter passed");
+
+                }
+
+                variableType = variable.getType();
+            }
+
+            if(!parameter.getType().canAccept(variableType)) {
+                // TODO: throw not same type
+                throw new IllegalLineException("parameter of not same type");
+            }
+        }
     }
 
 
@@ -136,18 +209,18 @@ public class LineParser {
     private static Pattern booleanValuePattern = Pattern.compile(RegexConstants.BOOLEAN_VALUE);
     private static Pattern identifierValuePattern = Pattern.compile(RegexConstants.IDENTIFIER);
 
-    public static VariableType getAssignmentType(String assignment, VariablesTable table) {
-        if (intValuePattern.matcher(assignment).matches()){
+    public static VariableType getExpressionType(String expression, VariablesTable table) {
+        if (intValuePattern.matcher(expression).matches()){
             return VariableType.INT;
-        } else if (doubleValuePattern.matcher(assignment).matches()){
+        } else if (doubleValuePattern.matcher(expression).matches()){
             return VariableType.DOUBLE;
-        } else if (charValuePattern.matcher(assignment).matches()){
+        } else if (charValuePattern.matcher(expression).matches()){
             return VariableType.CHAR;
-        } else if (stringValuePattern.matcher(assignment).matches()){
+        } else if (stringValuePattern.matcher(expression).matches()){
             return VariableType.STRING;
-        } else if (booleanValuePattern.matcher(assignment).matches()){
+        } else if (booleanValuePattern.matcher(expression).matches()){
             return VariableType.BOOLEAN;
-        } else if (identifierValuePattern.matcher(assignment).matches()){
+        } else if (identifierValuePattern.matcher(expression).matches()){
             return VariableType.IDENTIFIER;
         }
 
@@ -190,21 +263,6 @@ public class LineParser {
                 lineType == LineType.CHAR_VAR_DECLARATION ||
                 lineType == LineType.BOOLEAN_VAR_DECLARATION ||
                 lineType == LineType.STRING_VAR_DECLARATION;
-    }
-
-    /**
-     * Returns whether a line type is a variable assignment line
-     *
-     * @param lineType Line type to check
-     * @return Whether the given line is a variable assignment
-     */
-    public static boolean isVarAssignmentLine(LineType lineType) {
-        return lineType == LineType.IDENTIFIER_VAR_ASSIGNMENT ||
-                lineType == LineType.INT_VAR_ASSIGMENT ||
-                lineType == LineType.DOUBLE_VAR_ASSIGMENT ||
-                lineType == LineType.CHAR_VAR_ASSIGMENT ||
-                lineType == LineType.BOOLEAN_VAR_ASSIGMENT ||
-                lineType == LineType.STRING_VAR_ASSIGMENT;
     }
 
     /**

@@ -3,6 +3,7 @@ package oop.ex6.checker.methods;
 import oop.ex6.checker.ITable;
 import oop.ex6.checker.variables.Variable;
 import oop.ex6.checker.variables.VariableType;
+import oop.ex6.utils.Pair;
 
 import java.util.*;
 
@@ -26,7 +27,7 @@ public class MethodsTable implements ITable<Method> {
      * @param parameters   A list of parameters the method requires
      * @return             Created Method object
      */
-    public Method addMethod(String name, ReturnType returnType, Map<String, Variable> parameters) {
+    public Method addMethod(String name, ReturnType returnType, List<Pair<String, Variable>> parameters) {
         if (this.methods.containsKey(name)) {
             // TODO: might wanna throw an exception
             return null;

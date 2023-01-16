@@ -75,19 +75,17 @@ public class RegexConstants {
     // value of, as well as the value we set
     // () = optional
     // [] = required
-    private static final String ASSIGNMENT =
+    public static final String ASSIGNMENT =
             "\\s*" +                   // Ignoring spaces at the beginning
             IDENTIFIER +               // [name]
             "\\s*=\\s*" +              // =
-            "(%s)" +                   // [value]
+            ANY_VALUE +                // [value]
+            "(\\s*,\\s*" +             // Optionally, assign more variables
+            IDENTIFIER +
+            "\\s*=\\s*" +
+            ANY_VALUE +
+            "\\s*)*" +
             "\\s*;\\s*";               // ;
-
-    public static final String IDENTIFIER_ASSIGMENT = String.format(ASSIGNMENT, IDENTIFIER);
-    public static final String INT_ASSIGMENT = String.format(ASSIGNMENT, INT_VALUE);
-    public static final String STRING_ASSIGMENT = String.format(ASSIGNMENT, STRING_VALUE);
-    public static final String CHAR_ASSIGMENT = String.format(ASSIGNMENT, CHAR_VALUE);
-    public static final String BOOLEAN_ASSIGMENT = String.format(ASSIGNMENT, BOOLEAN_VALUE);
-    public static final String DOUBLE_ASSIGMENT = String.format(ASSIGNMENT, DOUBLE_VALUE);
 
 
     // Declares a regex that defines a block opener statement like if or while

@@ -11,21 +11,22 @@ public class FileParserTest {
         try {
             FileParser fileParser = new FileParser(args[0]);
 
-            while(fileParser.hasMoreLines()) {
-                System.out.println(fileParser.getCurrentLine());
-                fileParser.advance();
-            }
-
-            fileParser.reset();
+//            while(fileParser.hasMoreLines()) {
+//                System.out.println(fileParser.getCurrentLine());
+//                fileParser.advance();
+//            }
 
             Checker checker = new Checker(fileParser);
             checker.check();
-        } catch (CheckerException exception) {
-            System.out.println(Result.ILLEGAL.getCode());
-            System.err.println(exception.getMessage());
-        } catch (IOException exception) {
+
+            System.out.println(Result.LEGAL.getCode());
+        } catch (IOException | CheckerException exception) {
             System.out.println(Result.IO_ERROR.getCode());
             System.err.println(exception.getMessage());
         }
+//        } catch (Exception exception) {
+//            System.out.println(Result.ILLEGAL.getCode());
+//            System.err.println(exception.getMessage());
+//        }
     }
 }
