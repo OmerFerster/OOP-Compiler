@@ -25,7 +25,7 @@ public class RegexConstants {
     public static final String IDENTIFIER = "(([a-zA-Z]|_\\w)\\w*)";
     public static final String METHOD_IDENTIFIER = "(([a-zA-Z])\\w*)";
 
-    public static final String OPTIONAL_FINAL = "(" + Constants.FINAL_KEYWORD + "\\s*){0,1}";
+    public static final String OPTIONAL_FINAL = "(" + Constants.FINAL_KEYWORD + "\\s+){0,1}";
 
     public static final String INT_VALUE = "[+-]{0,1}\\d+";
     public static final String DOUBLE_VALUE = "[+-]{0,1}(\\d+([\\.]\\d*){0,1}|\\d*[\\.]\\d+)";
@@ -53,11 +53,11 @@ public class RegexConstants {
     // [] = required
     private static final String VARIABLE =
             "\\s*" +                                       // Ignoring spaces at the beginning
-            OPTIONAL_FINAL + "%s " +                       // (final) [type]
+            OPTIONAL_FINAL + "%s\\s+" +                       // (final) [type]
             IDENTIFIER +                                   // [name]
             "(" + "\\s*,\\s*" + "(" + IDENTIFIER + ")" +   // [, another name
             "|" +                                          // or
-            "\\s*=\\s*" + "%s" + ")*"                      // = value]
+            "\\s*=\\s*" + "(%s|" + IDENTIFIER + ")" + ")*" // = value]
             + "(\\s*);\\s*";                               // ;
 
     public static final String INT_VARIABLE = String.format(VARIABLE,
@@ -94,7 +94,7 @@ public class RegexConstants {
     public static final String CONDITION = "(" + IDENTIFIER + "|" + BOOLEAN_VALUE + ")" +
             "(" + "\\s*(\\|\\||&&)\\s*" + "(" + IDENTIFIER + "|" + BOOLEAN_VALUE + ")" + ")*";
 
-    private static final String CONDITIONAL_BLOCK = "\\s*%s\\s*\\(\\s*" + CONDITION + "\\s*\\)\\s*{\\s*";
+    private static final String CONDITIONAL_BLOCK = "\\s*%s\\s*\\(\\s*" + CONDITION + "\\s*\\)\\s*\\{\\s*";
 
     public static final String IF_STATEMENT = String.format(CONDITIONAL_BLOCK,
             Constants.IF_KEYWORD);
@@ -115,12 +115,11 @@ public class RegexConstants {
     // () (type variable, type variable)
     public static final String RECEIVED_PARAM_LIST =
             "\\(" +
-
-            "\\s*(()|" + OPTIONAL_FINAL + PARAMETER_TYPES + " " + IDENTIFIER +
-            "(" + "\\s*,\\s*" + "(" + OPTIONAL_FINAL + PARAMETER_TYPES + " " + IDENTIFIER + "))*)\\s*" +
-
+            "\\s*(()|" + OPTIONAL_FINAL + PARAMETER_TYPES + "\\s+" + IDENTIFIER +
+            "(" + "\\s*,\\s*" + "(" + OPTIONAL_FINAL + PARAMETER_TYPES + "\\s+" + IDENTIFIER +
+            "))*)\\s*" +
             "\\)";
 
     public static final String METHOD_DECLARATION = "\\s*" + RETURN_TYPES + "\\s*" + METHOD_IDENTIFIER +
-            "\\s*" + RECEIVED_PARAM_LIST + "\\s*{\\s*";
+            "\\s*" + RECEIVED_PARAM_LIST + "\\s*\\{\\s*";
 }

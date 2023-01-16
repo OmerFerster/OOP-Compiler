@@ -7,4 +7,9 @@ public abstract class DefinitionException extends CheckerException {
     public DefinitionException(String message) {
         super(message);
     }
+
+    public DefinitionException(String message, Exception exception) {
+        super(message, exception);
+    }
 }
+

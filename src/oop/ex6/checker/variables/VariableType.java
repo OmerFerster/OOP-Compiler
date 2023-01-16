@@ -11,7 +11,8 @@ public enum VariableType {
     DOUBLE(Constants.DOUBLE_KEYWORD, INT),
     STRING(Constants.STRING_KEYWORD),
     BOOLEAN(Constants.BOOLEAN_KEYWORD, INT, DOUBLE),
-    CHAR(Constants.CHAR_KEYWORD);
+    CHAR(Constants.CHAR_KEYWORD),
+    IDENTIFIER();
 
 
     private final String declarator;
@@ -21,6 +22,11 @@ public enum VariableType {
         this.declarator = declarator;
         this.acceptedTypes = acceptedTypes;
     }
+
+    VariableType() {
+        this(null);
+    }
+
 
     /**
      * Returns the keyword used to reference the variable type
@@ -37,7 +43,11 @@ public enum VariableType {
      * @param variableType   Type to check acceptance
      * @return               Whether the given type can be accepted
      */
-    public boolean isAccepted(VariableType variableType) {
+    public boolean canAccept(VariableType variableType) {
+        if(variableType == this) {
+            return true;
+        }
+
         for(VariableType accepted : this.acceptedTypes) {
             if(accepted == variableType) {
                 return true;
@@ -56,11 +66,17 @@ public enum VariableType {
      */
     public static VariableType fromValue(String keyword) {
         for(VariableType variableType : VariableType.values()) {
+            // TODO make this code faster
+            if(variableType.getDeclarator() == null) {
+                continue;
+            }
+
             if(variableType.getDeclarator().equals(keyword)) {
                 return variableType;
             }
         }
 
+        // TODO: throw correct exception
         return null;
     }
 }

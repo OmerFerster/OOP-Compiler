@@ -1,9 +1,11 @@
+import oop.ex6.checker.CheckerException;
+import oop.ex6.checker.variables.VariableAlreadyDefinedException;
 import oop.ex6.checker.variables.VariablesTable;
 import oop.ex6.checker.variables.VariableType;
 
 public class VariableTableTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CheckerException {
         VariablesTable symbolTable = new VariablesTable();
 
         symbolTable.addVariable("a", VariableType.BOOLEAN, false, false);

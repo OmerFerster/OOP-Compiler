@@ -36,7 +36,9 @@ public class FileParser {
 
             while ((line = bufferedReader.readLine()) != null) {
                 // Splitting lines by \n and \r
-                this.lines.addAll(Arrays.asList(line.split("[\n\r]")));
+                for(String subLine : line.split("[\n\r]")) {
+                    this.lines.add(subLine.strip());
+                }
             }
         } catch(FileNotFoundException exception) {
             throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, sourceFile));

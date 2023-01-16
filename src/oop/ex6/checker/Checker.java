@@ -1,6 +1,7 @@
 package oop.ex6.checker;
 
 import oop.ex6.checker.methods.MethodsTable;
+import oop.ex6.checker.methods.ReturnType;
 import oop.ex6.checker.variables.VariablesTable;
 import oop.ex6.parser.FileParser;
 
@@ -11,56 +12,102 @@ public class Checker {
     private final VariablesTable variablesTable;
     private final MethodsTable methodsTable;
 
-
-    public Checker(FileParser fileParser) {
+    public Checker(FileParser fileParser) throws CheckerException {
         this.fileParser = fileParser;
 
         this.variablesTable = new VariablesTable();
         this.methodsTable = new MethodsTable();
-
-        this.initTables();
     }
 
 
-    private void initTables() {
+    private void initTables() throws CheckerException {
         int scope = 0;
 
-        while(this.fileParser.hasMoreLines()) {
-//            LineType lineType = LineType.getLineType(this.fileParser.getCurrentLine());
+        while (this.fileParser.hasMoreLines()) {
+            LineType lineType = LineParser.getLineType(this.fileParser.getCurrentLine());
 
-            // Compilable  [compile(line)]
-            // - VarDecCompiler
-            // - VarAssignCompiler
-            // -
+            // Handle scoping
+            if (LineParser.isBlockOpener(lineType)) {
+                this.variablesTable.openScope();
+                scope++;
+            } else if (LineParser.isBlockCloser(lineType)) {
+                this.variablesTable.closeScope();
+                scope--;
+            }
 
-//            if (LineType.isVarDeclarationLine(lineType) && scope == 0) {
-//
-//            }
-
-            // if var dec (in global scope): add to symbol table
-            // if entering new scope: remember it
-            // if leaving scope: remember it
-            // if initializing global var, update symbol table
+            if (LineParser.isVarDeclarationLine(lineType) && scope == 0) {
+                LineParser.parseVarDeclarationLine(this.variablesTable, this.fileParser.getCurrentLine());
+            } else if (LineParser.isVarAssignmentLine(lineType) && scope == 0) {
+                LineParser.parseVarAssignmentLine(this.variablesTable, this.fileParser.getCurrentLine());
+            } else if (lineType == LineType.METHOD_DECLARATION && scope == 0) {
+                LineParser.parseMethodDeclarationLine(this.methodsTable, this.fileParser.getCurrentLine());
+            }
 
             this.fileParser.advance();
         }
-
-        this.fileParser.reset();
     }
 
 
     public void check() throws CheckerException {
-        this.fileParser.reset();
 
         try {
-            compileFile();
+            this.fileParser.reset();
+
+            this.initTables();
+
+            this.fileParser.reset();
+
+            this.compileFile();
 
         } catch (CheckerException exception) {
-            throw exception;
+            throw new IllegalLineException(exception.getMessage(), exception);
         }
     }
 
     public void compileFile() throws CheckerException {
+        int scope = 0;
 
+        while (this.fileParser.hasMoreLines()) {
+            LineType lineType = LineParser.getLineType(this.fileParser.getCurrentLine());
+
+            // Handle scoping
+            if (LineParser.isBlockOpener(lineType)) {
+                this.variablesTable.openScope();
+                scope++;
+            } else if (LineParser.isBlockCloser(lineType)) {
+                this.variablesTable.closeScope();
+                scope--;
+            }
+
+
+            if (lineType == LineType.METHOD_DECLARATION) {
+//                String[] tokens = this.fileParser.getCurrentLine().split("\\(")[0].split("\\s*")[2];
+//
+//                String methodName = tokens[0].split(" ")[1];
+                // void foo() {
+                // methodTable.getByName(foo)
+            }
+            else if (LineParser.isVarDeclarationLine(lineType) && scope >= 1) {
+                LineParser.parseVarDeclarationLine(this.variablesTable, this.fileParser.getCurrentLine());
+            }
+            else if(LineParser.isVarAssignmentLine(lineType) && scope >= 1) {
+                LineParser.parseVarAssignmentLine(this.variablesTable, this.fileParser.getCurrentLine());
+            }
+
+            // Compile all lines that are scope >= 1
+            //   - check method declaration and add all parameters to variables table of new scope
+            // - check variable declaration in [scope >=1]
+            // - check variable assignment in [scope >=1]
+            // - check if and conditions inside if [scope >=1]
+            // - check while and conditions inside while [scope >=1]
+            // - check method calls and parameters passed [scope >=1]
+            // - check return [scope > 1]
+            // - check return in scope == 1 without } after it
+            // - check } in scope == 1 without return before it
+
+
+
+            this.fileParser.advance();
+        }
     }
 }

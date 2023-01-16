@@ -18,4 +18,5 @@ public class Constants {
     public static final String WHILE_KEYWORD = "while";
     public static final String RETURN_KEYWORD = "return";
 
+    public static final String ILLEGAL_LINE_MESSAGE = "%s is an illegal sjava line!";
 }

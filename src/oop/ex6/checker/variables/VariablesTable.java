@@ -48,16 +48,21 @@ public class VariablesTable implements ITable<Variable> {
      *
      * @param name                               Name of the variable
      * @param variableType                       Type of the variable
-     * @param initialized                        Whether the variable is initialized
+     * @param isInitialized                      Whether the variable is initialized
      * @param isFinal                            Whether the variable is final
      * @return                                   Created Variable object
      * @throws VariableAlreadyDefinedException   Throws an exception if variable with the same name
      *                                           already exists within the same scope
      */
-    public Variable addVariable(String name, VariableType variableType, boolean initialized,
-                                boolean isFinal) throws VariableAlreadyDefinedException {
-        Variable variable = new Variable(variableType, initialized, isFinal);
+    public Variable addVariable(String name, VariableType variableType, boolean isInitialized,
+                                boolean isFinal)
+            throws VariableAlreadyDefinedException, UninitializedFinalVariableException {
 
+        if (isFinal && !isInitialized) {
+            throw new UninitializedFinalVariableException(name);
+        }
+
+        Variable variable = new Variable(variableType, isInitialized, isFinal);
         boolean succeeded;
 
         if (this.scopeVariables.size() == 0) {

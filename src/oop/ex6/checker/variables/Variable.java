@@ -1,5 +1,7 @@
 package oop.ex6.checker.variables;
 
+import oop.ex6.checker.IllegalLineException;
+
 /**
  * A class that represents a single variable object
  */
@@ -7,14 +9,18 @@ public class Variable {
 
     private final VariableType type;
 
-    private final boolean isInitialized;
     private final boolean isFinal;
+
+    private boolean isInitialized;
 
     public Variable(VariableType type, boolean isInitialized, boolean isFinal) {
         this.type = type;
 
-        this.isInitialized = isInitialized;
         this.isFinal = isFinal;
+
+
+        // TODO handle uninitialized variables when entering/leaving method
+        this.isInitialized = isInitialized;
     }
 
 
@@ -26,16 +32,33 @@ public class Variable {
     }
 
     /**
+     * @return   Whether the variable is final
+     */
+    public boolean isFinal() {
+        return this.isFinal;
+    }
+
+    /**
      * @return   Whether the variable is initialized
      */
     public boolean isInitialized() {
         return this.isInitialized;
     }
 
-    /**
-     * @return   Whether the variable is final
-     */
-    public boolean isFinal() {
-        return this.isFinal;
+
+    public void initialize(VariableType assigmentType) throws IllegalLineException {
+        if(this.isFinal) {
+            throw new IllegalLineException("trying to initialize final variable");
+            // TODO: throw exception
+        }
+
+        if(!this.getType().canAccept(assigmentType)) {
+            throw new IllegalLineException("trying to initialize variable with wrong type");
+            // TODO: throw exception
+        }
+
+        // TODO: if value doesn't match type, throw exception
+
+        this.isInitialized = true;
     }
 }
