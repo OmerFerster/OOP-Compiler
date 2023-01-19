@@ -1,6 +1,7 @@
 package oop.ex6.checker.methods;
 
 import oop.ex6.checker.ITable;
+import oop.ex6.checker.IllegalLineException;
 import oop.ex6.checker.variables.Variable;
 import oop.ex6.checker.variables.VariableType;
 import oop.ex6.utils.Pair;
@@ -47,7 +48,7 @@ public class MethodsTable implements ITable<Method> {
      * @return       Whether a method of that name exists
      */
     @Override
-    public boolean exists(String name) {
+    public boolean exists(String name) throws IllegalLineException {
         return this.getByName(name) != null;
     }
 
@@ -59,12 +60,11 @@ public class MethodsTable implements ITable<Method> {
      * @return       Method object matched to the given name
      */
     @Override
-    public Method getByName(String name) {
+    public Method getByName(String name) throws IllegalLineException {
         if (this.methods.containsKey(name)) {
             return this.methods.get(name);
         }
 
-        // TODO: might wanna throw a "not exists exception"
-        return null;
+        throw new IllegalLineException("method not found");
     }
 }

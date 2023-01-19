@@ -12,47 +12,58 @@ public class Variable {
     private final boolean isFinal;
 
     private boolean isInitialized;
+    private boolean firstInitialization;
 
     public Variable(VariableType type, boolean isInitialized, boolean isFinal) {
         this.type = type;
 
         this.isFinal = isFinal;
 
-
-        // TODO handle uninitialized variables when entering/leaving method
         this.isInitialized = isInitialized;
+        this.firstInitialization = false;
     }
 
 
     /**
-     * @return   The variable's type
+     * @return The variable's type
      */
     public VariableType getType() {
         return this.type;
     }
 
     /**
-     * @return   Whether the variable is final
+     * @return Whether the variable is final
      */
     public boolean isFinal() {
         return this.isFinal;
     }
 
     /**
-     * @return   Whether the variable is initialized
+     * @return Whether the variable is initialized
      */
     public boolean isInitialized() {
         return this.isInitialized;
     }
 
+    public boolean isFirstInitialization() {
+        return this.firstInitialization;
+    }
+
+    public void setFirstInitialization(boolean newValue) {
+        this.firstInitialization = newValue;
+    }
+
+    public void uninitialize() {
+        this.isInitialized = false;
+    }
 
     public void initialize(VariableType assigmentType) throws IllegalLineException {
-        if(this.isFinal) {
+        if (this.isFinal) {
             throw new IllegalLineException("trying to initialize final variable");
             // TODO: throw exception
         }
 
-        if(!this.getType().canAccept(assigmentType)) {
+        if (!this.getType().canAccept(assigmentType)) {
             throw new IllegalLineException("trying to initialize variable with wrong type");
             // TODO: throw exception
         }

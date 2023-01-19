@@ -59,13 +59,13 @@ public class LineParser {
 
             if (isInitialized) {
                 if (getExpressionType(token.split("=")[1], variables) == VariableType.IDENTIFIER) {
-                    if (variables.getByName(token.split("=")[1]).getType() != variableType) {
+                    if (!variableType.canAccept(variables.getByName(token.split("=")[1]).getType())) {
                         // TODO: throw exception
                         throw new IllegalLineException("Tried to initialize variable with wrong type!");
                     }
                     if (!variables.getByName(token.split("=")[1]).isInitialized()) {
                         // TODO: throw exception
-                        throw new IllegalLineException("Tried to initialize variable with wrong type!");
+                        throw new IllegalLineException("Tried to initialize variable with uninitialized variable!");
                     }
                 }
             }

@@ -47,6 +47,12 @@ public class Checker {
 
             this.fileParser.advance();
         }
+
+        for (Variable globalVariable : this.variablesTable.getGlobalVariable()) {
+            if (globalVariable.isInitialized()) {
+                globalVariable.setFirstInitialization(true);
+            }
+        }
     }
 
 
@@ -64,7 +70,6 @@ public class Checker {
 
     public void compileFile() throws CheckerException {
         int scope = 0;
-        boolean returned = false;
 
         while (this.fileParser.hasMoreLines()) {
             LineType lineType = LineParser.getLineType(this.fileParser.getCurrentLine());
@@ -78,11 +83,7 @@ public class Checker {
                 scope--;
             }
 
-            if(returned && lineType != LineType.BLOCK_CLOSE) {
-                // todo: throw exception. Not closing
-                throw new IllegalLineException("no block close after return");
-
-            } else if (lineType == LineType.METHOD_DECLARATION && scope == 1) {
+            if (lineType == LineType.METHOD_DECLARATION && scope == 1) {
                 String methodName = this.fileParser.getCurrentLine()
                         .split("\\(")[0].split("\\s+")[1];
 
@@ -94,47 +95,30 @@ public class Checker {
                             entry.getValue().isInitialized(),
                             entry.getValue().isFinal());
                 }
-            }
-            else if (LineParser.isVarDeclarationLine(lineType) && scope >= 1) {
+            } else if (LineParser.isVarDeclarationLine(lineType) && scope >= 1) {
                 LineParser.parseVarDeclarationLine(this.variablesTable, this.fileParser.getCurrentLine());
-            } else if(lineType == LineType.ASSIGNMENT && scope >= 1) {
+            } else if (lineType == LineType.ASSIGNMENT && scope >= 1) {
                 LineParser.parseVarAssignmentLine(this.variablesTable, this.fileParser.getCurrentLine());
-            } else if(lineType == LineType.IF && scope >= 1) {
+            } else if (lineType == LineType.IF && scope >= 1) {
                 LineParser.parseConditionalStatement(this.variablesTable, this.fileParser.getCurrentLine());
-            } else if(lineType == LineType.WHILE && scope >= 1) {
+            } else if (lineType == LineType.WHILE && scope >= 1) {
                 LineParser.parseConditionalStatement(this.variablesTable, this.fileParser.getCurrentLine());
-            } else if (lineType == LineType.METHOD_CALL && scope >= 1) {
+            } else if (lineType == LineType.METHOD_CALL && scope >= 0) { // TODO check scope maybe 0
                 LineParser.parseMethodCall(this.methodsTable, this.variablesTable, this.fileParser.getCurrentLine());
-            } else if(lineType == LineType.RETURN && scope == 1) {
-                returned = true;
-            } else if(lineType == LineType.BLOCK_CLOSE) {
-                if(scope == 0) {
-                    if(!returned) {
-                        throw new IllegalLineException("no return before block close");
-                        // TODO: throw exception - no return
-                    } else {
-                        returned = false;
-                    }
-
-//                    variablesTable.revertGlobalVariables();
-                    
-                    // Revert all uninitialized variables
+            } else if (lineType == LineType.BLOCK_CLOSE && scope == 0) {
+                LineType prevLineType = LineParser.getLineType(this.fileParser.getPreviousLine());
+                if (!(prevLineType == LineType.RETURN)) {
+                    throw new IllegalLineException("no return before block close");
                 }
+
+                this.variablesTable.revertGlobalVariables(); // Revert all uninitialized variables
             }
-
-            // Compile all lines that are scope >= 1
-            // V - check method declaration and add all parameters to variables table of new scope
-            // V - check variable declaration in [scope >=1]
-            // V - check variable assignment in [scope >=1]
-            // V - check if and conditions inside if [scope >=1]
-            // V - check while and conditions inside while [scope >=1]
-            // V - check method calls and parameters passed [scope >=1]
-
-            // V - check return [scope > 1]
-            // V - check return in scope == 1 without } after it
-            // V - check } in scope == 1 without return before it
 
             this.fileParser.advance();
+        }
+
+        if (scope != 0) {  // checking if scopes closed the way it should;
+            throw new IllegalLineException("missing closing parentheses");
         }
     }
 }

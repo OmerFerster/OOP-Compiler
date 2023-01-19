@@ -69,6 +69,14 @@ public class FileParser {
         return this.lines.get(this.currentLineIndex);
     }
 
+    public String getPreviousLine() {
+        if (this.currentLineIndex <= 0) {
+            return null;
+        }
+
+        return this.lines.get(this.currentLineIndex - 1);
+    }
+
     /**
      * Advances the file to the next line
      */

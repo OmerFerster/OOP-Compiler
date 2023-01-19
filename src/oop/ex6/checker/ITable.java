@@ -7,7 +7,7 @@ package oop.ex6.checker;
  */
 public interface ITable<T> {
 
-    boolean exists(String name);
+    boolean exists(String name) throws IllegalLineException ;
 
-    T getByName(String name);
+    T getByName(String name) throws IllegalLineException ;
 }

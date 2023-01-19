@@ -1,11 +1,9 @@
 package oop.ex6.checker.variables;
 
 import oop.ex6.checker.ITable;
+import oop.ex6.checker.IllegalLineException;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A class used to store all variables used within a sjava program
@@ -40,6 +38,10 @@ public class VariablesTable implements ITable<Variable> {
         }
 
         this.scopeVariables.removeLast();
+    }
+
+    public Collection<Variable> getGlobalVariable() {
+        return globalVariables.values();
     }
 
 
@@ -118,7 +120,7 @@ public class VariablesTable implements ITable<Variable> {
      * @return       Whether a variable of that name exists
      */
     @Override
-    public boolean exists(String name) {
+    public boolean exists(String name) throws IllegalLineException  {
         return this.getByName(name) != null;
     }
 
@@ -130,7 +132,7 @@ public class VariablesTable implements ITable<Variable> {
      * @return       Variable object matched to the given name
      */
     @Override
-    public Variable getByName(String name) {
+    public Variable getByName(String name) throws IllegalLineException {
         if (this.scopeVariables.size() > 0) {
             Iterator<Map<String, Variable>> scopeIterator = this.scopeVariables.descendingIterator();
 
@@ -150,6 +152,14 @@ public class VariablesTable implements ITable<Variable> {
         }
 
         // TODO: might wanna throw a "not exists exception"
-        return null;
+        throw new IllegalLineException("couldn't find variable " + name);
+    }
+
+    public void revertGlobalVariables() {
+        for (Variable globalVariable : this.getGlobalVariable()) {
+            if(!globalVariable.isFirstInitialization()) {
+                globalVariable.uninitialize();
+            }
+        }
     }
 }
