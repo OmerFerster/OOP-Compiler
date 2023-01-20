@@ -29,7 +29,7 @@ public class Checker {
     /**
      * Checks if the given file is a legal, compilable, sjava file
      *
-     * @throws CheckerException   Throws an exception if the code is illegal
+     * @throws CheckerException Throws an exception if the code is illegal
      */
     public void check() throws CheckerException {
         try {
@@ -58,7 +58,7 @@ public class Checker {
                 LineType.fromLine(this.fileParser.getCurrentLine());
 
                 this.fileParser.advance();
-            } catch(TypeException exception) {
+            } catch (TypeException exception) {
                 throw new CheckerException(exception.getMessage(), exception);
             }
         }
@@ -68,7 +68,7 @@ public class Checker {
      * Initializes the tables by looping over the entire code and parsing global variables and
      * subroutine declarations
      *
-     * @throws CheckerException   Throws an exception if there was a problem with any line
+     * @throws CheckerException Throws an exception if there was a problem with any line
      */
     private void globalCheck() throws CheckerException {
         int scope = 0;
@@ -105,7 +105,7 @@ public class Checker {
 
                 // Advances to next line
                 this.fileParser.advance();
-            } catch(CheckerException exception){
+            } catch (CheckerException exception) {
                 throw new CheckerException(exception.getMessage(), exception);
             }
         }
@@ -122,58 +122,15 @@ public class Checker {
      * Checks if the file is legal by looping over the entire code and handling each
      * line type separately, through the line parser.
      *
-     * @throws CheckerException   Throws an exception if there was a problem with any line
+     * @throws CheckerException Throws an exception if there was a problem with any line
      */
     public void thoroughCheck() throws CheckerException {
         int scope = 0;
 
         while (this.fileParser.hasMoreLines()) {
             try {
-                LineType lineType = LineType.fromLine(this.fileParser.getCurrentLine());
-
-                // Updates the scope according to whether we have a line that is a block opener or closer
-                if (LineType.isBlockOpenerLine(lineType)) {
-                    this.variables.openScope();
-                    scope++;
-                } else if (LineType.isBlockCloserLine(lineType)) {
-                    this.variables.closeScope();
-                    scope--;
-                }
-
-
-                // Handles variable declaration lines in local scopes
-                if (LineType.isVariableDeclarationLine(lineType) && scope >= 1) {
-                    this.lineParser.parseVariableDeclarationLine(this.fileParser.getCurrentLine());
-                }
-
-                // Handles variable assignment lines in local scopes
-                else if (LineType.isVariableAssignmentLine(lineType) && scope >= 1) {
-                    this.lineParser.parseVariableAssignmentLine(this.fileParser.getCurrentLine());
-                }
-
-                // Handles subroutine declaration lines in the global scope
-                else if (LineType.isSubroutineDeclarationLine(lineType) && scope == 1) {
-                    this.lineParser.parseSubroutineStartLine(this.fileParser.getCurrentLine());
-                }
-
-                // Handles subroutine call lines in all scopes
-                else if (LineType.isSubroutineCallLine(lineType) && scope >= 0) {
-                    this.lineParser.parseSubroutineCall(this.fileParser.getCurrentLine());
-                }
-
-                // Handles block close lines of a subroutine
-                else if (LineType.isBlockCloserLine(lineType) && scope == 0) {
-                    this.lineParser.parseSubroutineCloseLine(this.fileParser.getPreviousLine());
-                }
-
-                // Handles if & while conditional lines in local scopes
-                else if (LineType.isConditionalLine(lineType) && scope >= 1) {
-                    this.lineParser.parseConditionalLine(this.fileParser.getCurrentLine());
-                }
-
-                // Advances to next line
-                this.fileParser.advance();
-            } catch(CheckerException exception) {
+                scope = handleParseLogic(scope);
+            } catch (CheckerException exception) {
                 throw new CheckerException(exception.getMessage(), exception);
             }
         }
@@ -183,4 +140,45 @@ public class Checker {
             throw new CheckerException(Messages.SCOPE_NOT_CLOSED);
         }
     }
+
+    private int handleParseLogic(int scopeByValue) throws CheckerException {
+        int scope = scopeByValue;
+        LineType lineType = LineType.fromLine(this.fileParser.getCurrentLine());
+        // Updates the scope according to whether we have a line that is a block opener or closer
+        if (LineType.isBlockOpenerLine(lineType)) {
+            this.variables.openScope();
+            scope++;
+        } else if (LineType.isBlockCloserLine(lineType)) {
+            this.variables.closeScope();
+            scope--;
+        }
+        // Handles variable declaration lines in local scopes
+        if (LineType.isVariableDeclarationLine(lineType) && scope >= 1) {
+            this.lineParser.parseVariableDeclarationLine(this.fileParser.getCurrentLine());
+        }
+        // Handles variable assignment lines in local scopes
+        else if (LineType.isVariableAssignmentLine(lineType) && scope >= 1) {
+            this.lineParser.parseVariableAssignmentLine(this.fileParser.getCurrentLine());
+        }
+        // Handles subroutine declaration lines in the global scope
+        else if (LineType.isSubroutineDeclarationLine(lineType) && scope == 1) {
+            this.lineParser.parseSubroutineStartLine(this.fileParser.getCurrentLine());
+        }
+        // Handles subroutine call lines in all scopes
+        else if (LineType.isSubroutineCallLine(lineType) && scope >= 0) {
+            this.lineParser.parseSubroutineCall(this.fileParser.getCurrentLine());
+        }
+        // Handles block close lines of a subroutine
+        else if (LineType.isBlockCloserLine(lineType) && scope == 0) {
+            this.lineParser.parseSubroutineCloseLine(this.fileParser.getPreviousLine());
+        }
+        // Handles if & while conditional lines in local scopes
+        else if (LineType.isConditionalLine(lineType) && scope >= 1) {
+            this.lineParser.parseConditionalLine(this.fileParser.getCurrentLine());
+        }
+        // Advances to next line
+        this.fileParser.advance();
+        return scope;
+    }
+
 }

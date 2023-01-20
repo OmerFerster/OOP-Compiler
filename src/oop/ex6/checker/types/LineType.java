@@ -50,12 +50,12 @@ public enum LineType {
     /**
      * A static method to return the matching LineType object from a given line.
      *
-     * @param line   Line to parse the LineType from
-     * @return       Matching LineType entry
+     * @param line Line to parse the LineType from
+     * @return Matching LineType entry
      */
     public static LineType fromLine(String line) throws TypeException {
         for (LineType lineType : LineType.values()) {
-            if(lineType.pattern.matcher(line).matches()) {
+            if (lineType.pattern.matcher(line).matches()) {
                 return lineType;
             }
         }
@@ -68,7 +68,7 @@ public enum LineType {
      * Returns whether a line type is a variable declaration line
      *
      * @param lineType Line type to check
-     * @return         Whether the given line is a variable declaration
+     * @return Whether the given line is a variable declaration
      */
     public static boolean isVariableDeclarationLine(LineType lineType) {
         return lineType == LineType.INT_VAR_DECLARATION ||
@@ -82,7 +82,7 @@ public enum LineType {
      * Returns whether a line type is a variable assignment line
      *
      * @param lineType Line type to check
-     * @return         Whether the given line is a variable assignment
+     * @return Whether the given line is a variable assignment
      */
     public static boolean isVariableAssignmentLine(LineType lineType) {
         return lineType == LineType.ASSIGNMENT;
@@ -92,7 +92,7 @@ public enum LineType {
      * Returns whether a line type is a subroutine declaration line
      *
      * @param lineType Line type to check
-     * @return         Whether the given line is a subroutine declaration
+     * @return Whether the given line is a subroutine declaration
      */
     public static boolean isSubroutineDeclarationLine(LineType lineType) {
         return lineType == LineType.METHOD_DECLARATION;
@@ -102,7 +102,7 @@ public enum LineType {
      * Returns whether a line type is a subroutine call line
      *
      * @param lineType Line type to check
-     * @return         Whether the given line is a subroutine call
+     * @return Whether the given line is a subroutine call
      */
     public static boolean isSubroutineCallLine(LineType lineType) {
         return lineType == LineType.METHOD_CALL;
@@ -112,7 +112,7 @@ public enum LineType {
      * Returns whether a line type is a conditional line
      *
      * @param lineType Line type to check
-     * @return         Whether the given line is a conditional line
+     * @return Whether the given line is a conditional line
      */
     public static boolean isConditionalLine(LineType lineType) {
         return lineType == LineType.IF || lineType == LineType.WHILE;

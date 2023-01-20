@@ -26,9 +26,8 @@ public class LineParser {
      * Parses a variable declaration line and adds all declared variables into the variables table
      * - Assumes ${line} is indeed of type VariableDeclaration
      *
-     * @param line   Line to parse
-     *
-     * @throws ParseException   Throws an exception if the parsing process have failed
+     * @param line Line to parse
+     * @throws ParseException Throws an exception if the parsing process have failed
      */
     public void parseVariableDeclarationLine(String line) throws ParseException {
         // Splits the line by declarations, while removing commas
@@ -52,7 +51,7 @@ public class LineParser {
         try {
             isFinal = variableData[0].equals(Constants.FINAL_KEYWORD);
             variableType = VariableType.fromKeyword(isFinal ? variableData[1] : variableData[0]);
-        } catch(TypeException exception) {
+        } catch (TypeException exception) {
             throw new ParseException(
                     String.format(Messages.ILLEGAL_VARIABLE_DECLARATION_PARSE, line), exception);
         }
@@ -67,9 +66,8 @@ public class LineParser {
      * Parses a variable assignment line
      * - Assumes ${line} is indeed of type VariableAssignment
      *
-     * @param line   Line to parse
-     *
-     * @throws ParseException   Throws an exception if the parsing process have failed
+     * @param line Line to parse
+     * @throws ParseException Throws an exception if the parsing process have failed
      */
     public void parseVariableAssignmentLine(String line) throws ParseException {
         // Splits the line by declarations, while removing commas
@@ -89,14 +87,13 @@ public class LineParser {
      * Declares a single variable from a declaration string:
      * Create a variable object and add it to the variables table
      *
-     * @param declaration       Declaration string to create variable from
-     * @param variableType      Type of the variable to create
-     * @param isFinal           Whether the created variable is final
-     *
-     * @throws ParseException   Throws an exception if it couldn't add variable to the table
+     * @param declaration  Declaration string to create variable from
+     * @param variableType Type of the variable to create
+     * @param isFinal      Whether the created variable is final
+     * @throws ParseException Throws an exception if it couldn't add variable to the table
      */
     private void declareVariable(String declaration, VariableType variableType,
-                                            boolean isFinal) throws ParseException {
+                                 boolean isFinal) throws ParseException {
 
         String name = declaration.split("=")[0];
         boolean initialize = declaration.contains("=");
@@ -106,7 +103,7 @@ public class LineParser {
             Variable variable = new Variable(variableType, false, initialize);
 
             // If the variable is initialized, make sure we have a legal initialization
-            if(initialize) {
+            if (initialize) {
                 String value = declaration.split("=")[1];
                 VariableType valueType = VariableType.fromExpression(value);
 
@@ -120,9 +117,9 @@ public class LineParser {
             variable.setFinal(isFinal);
 
             this.variables.add(name, variable);
-        } catch(TypeException exception) {
+        } catch (TypeException exception) {
             throw new ParseException(String.format(Messages.ILLEGAL_VARIABLE_VALUE, name), exception);
-        } catch(TableException exception) {
+        } catch (TableException exception) {
             throw new ParseException(exception.getMessage(), exception);
         }
     }
@@ -130,9 +127,8 @@ public class LineParser {
     /**
      * Assigns a single variable from an assignment string
      *
-     * @param assignment        Assignment string to assign variable from
-     *
-     * @throws ParseException   Throws an exception if it couldn't initialize variable
+     * @param assignment Assignment string to assign variable from
+     * @throws ParseException Throws an exception if it couldn't initialize variable
      */
     private void assignVariable(String assignment) throws ParseException {
         try {
@@ -154,14 +150,12 @@ public class LineParser {
     }
 
 
-
     /**
      * Parses a subroutine declaration line and adds it to the subroutines table
      * - Assumes ${line} is indeed of type SubroutineDeclaration
      *
-     * @param line   Line to parse
-     *
-     * @throws ParseException   Throws an exception if the parsing process have failed
+     * @param line Line to parse
+     * @throws ParseException Throws an exception if the parsing process have failed
      */
     public void parseSubroutineDeclarationLine(String line) throws ParseException {
         // Splits the line into all arguments, removing unnecessary spaces, commas and ';'
@@ -177,7 +171,7 @@ public class LineParser {
         try {
             subroutineName = arguments[0].split(" ")[1];
             returnType = ReturnType.fromKeyword(arguments[0].split(" ")[0]);
-        } catch(TypeException exception) {
+        } catch (TypeException exception) {
             throw new ParseException(
                     String.format(Messages.ILLEGAL_SUBROUTINE_RETURN_TYPE, line), exception);
         }
@@ -191,7 +185,7 @@ public class LineParser {
             Subroutine subroutine = new Subroutine(returnType, parameters);
 
             this.subroutines.add(subroutineName, subroutine);
-        } catch(TableException exception) {
+        } catch (TableException exception) {
             throw new ParseException(exception.getMessage(), exception);
         }
     }
@@ -200,9 +194,8 @@ public class LineParser {
      * Parses a subroutine start line
      * - Assumes ${line} is indeed of type SubroutineStart
      *
-     * @param line   Line to parse
-     *
-     * @throws ParseException   Throws an exception if the parsing process have failed
+     * @param line Line to parse
+     * @throws ParseException Throws an exception if the parsing process have failed
      */
     public void parseSubroutineStartLine(String line) throws ParseException {
         try {
@@ -219,7 +212,7 @@ public class LineParser {
 
                 this.variables.add(parameter.getKey(), variable);
             }
-        } catch(TableException exception) {
+        } catch (TableException exception) {
             throw new ParseException(exception.getMessage(), exception);
         }
     }
@@ -228,9 +221,8 @@ public class LineParser {
      * Parses a subroutine close line
      * - Assumes ${line} is indeed of type SubroutineClose
      *
-     * @param previousLine   Previous line
-     *
-     * @throws ParseException   Throws an exception if the parsing process have failed
+     * @param previousLine Previous line
+     * @throws ParseException Throws an exception if the parsing process have failed
      */
     public void parseSubroutineCloseLine(String previousLine) throws ParseException {
         try {
@@ -245,7 +237,7 @@ public class LineParser {
                     .stream()
                     .filter(Predicate.not(Variable::isGloballyInitialized))
                     .forEach(Variable::uninitialize);
-        } catch(TypeException exception) {
+        } catch (TypeException exception) {
             throw new ParseException(String.format(Messages.ILLEGAL_LINE_TYPE, previousLine), exception);
         }
     }
@@ -254,9 +246,8 @@ public class LineParser {
      * Parses a subroutine call line
      * - Assumes ${line} is indeed of type SubroutineCall
      *
-     * @param line   Line to parse
-     *
-     * @throws ParseException   Throws an exception if the parsing process have failed
+     * @param line Line to parse
+     * @throws ParseException Throws an exception if the parsing process have failed
      */
     public void parseSubroutineCall(String line) throws ParseException {
         // Splits the line by conditions, while removing commas, brackets and keywords
@@ -270,7 +261,7 @@ public class LineParser {
 
             this.checkCallArguments(subroutine,
                     Arrays.copyOfRange(arguments, 1, arguments.length));
-        } catch(TableException exception) {
+        } catch (TableException exception) {
             throw new ParseException(exception.getMessage(), exception);
         }
     }
@@ -278,10 +269,9 @@ public class LineParser {
     /**
      * Parses an array of arguments into a list of parameters
      *
-     * @param arguments         Subroutine's arguments to parse
-     * @return                  A list of parameters the subroutine accepts
-     *
-     * @throws ParseException   Throws an exception if it couldn't parse arguments
+     * @param arguments Subroutine's arguments to parse
+     * @return A list of parameters the subroutine accepts
+     * @throws ParseException Throws an exception if it couldn't parse arguments
      */
     private List<Pair<String, Variable>> parseParameterList(String[] arguments) throws ParseException {
         List<Pair<String, Variable>> parameters = new ArrayList<>();
@@ -317,10 +307,9 @@ public class LineParser {
     /**
      * Checks if all arguments passed to a subroutine are correct
      *
-     * @param subroutine        Subroutine to check with
-     * @param arguments         Passed arguments
-     *
-     * @throws ParseException   Throws an exception if there was a problem with any argument
+     * @param subroutine Subroutine to check with
+     * @param arguments  Passed arguments
+     * @throws ParseException Throws an exception if there was a problem with any argument
      */
     private void checkCallArguments(Subroutine subroutine, String[] arguments) throws ParseException {
         // If we don't have as many arguments as the subroutine demands
@@ -348,10 +337,10 @@ public class LineParser {
                 if (!parameter.getType().canAccept(argumentType)) {
                     throw new ParseException(Messages.INVALID_ARGUMENT_TYPE);
                 }
-            } catch(TypeException exception) {
+            } catch (TypeException exception) {
                 throw new ParseException(
                         String.format(Messages.ILLEGAL_VARIABLE_TYPE, arguments[i]), exception);
-            } catch(TableException exception) {
+            } catch (TableException exception) {
                 throw new ParseException(exception.getMessage(), exception);
             }
         }
@@ -362,15 +351,15 @@ public class LineParser {
      * Parses a conditional line
      * - Assumes ${line} is indeed of type ConditionalLine
      *
-     * @param line   Line to parse
-     *
-     * @throws ParseException   Throws an exception if the parsing process have failed
+     * @param line Line to parse
+     * @throws ParseException Throws an exception if the parsing process have failed
      */
     public void parseConditionalLine(String line) throws ParseException {
         // Splits the line by conditions, while removing commas, brackets and keywords
         // Example: "while(true && false && a || b) {"   ->  [true, false, a, b]
         String[] conditions = line
-                .replaceAll("(\\s*if\\s*|\\s*while\\s*|\\s*\\(\\s*|\\s*\\)\\s*|\\s*\\{\\s*)", "")
+                .replaceAll("(\\s*if\\s*|\\s*while\\s*|\\s*\\(\\s*|\\s*\\)\\s*|\\s*\\{\\s*)",
+                        "")
                 .split("\\s*\\|\\|\\s*|\\s*&&\\s*");
 
         this.checkConditions(conditions);
@@ -379,9 +368,8 @@ public class LineParser {
     /**
      * Checks all conditions within a conditional line
      *
-     * @param conditions        Conditions to check
-     *
-     * @throws ParseException   Throws an exception if any condition was invalid
+     * @param conditions Conditions to check
+     * @throws ParseException Throws an exception if any condition was invalid
      */
     private void checkConditions(String[] conditions) throws ParseException {
         for (String condition : conditions) {
@@ -402,10 +390,10 @@ public class LineParser {
                     throw new ParseException(
                             String.format(Messages.ILLEGAL_CONDITION, condition));
                 }
-            } catch(TypeException exception) {
+            } catch (TypeException exception) {
                 throw new ParseException(
                         String.format(Messages.ILLEGAL_VARIABLE_TYPE, condition), exception);
-            } catch(TableException exception) {
+            } catch (TableException exception) {
                 throw new ParseException(exception.getMessage(), exception);
             }
         }
