@@ -19,7 +19,7 @@ public enum Result {
     /**
      * Returns the result's code
      *
-     * @return   Result's code
+     * @return Result's code
      */
     public int getCode() {
         return code;

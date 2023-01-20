@@ -11,7 +11,7 @@ public class Sjavac {
     private static final String WRONG_ARGUMENT_NUMBER = "Wrong number of arguments entered";
 
     public static void main(String[] args) {
-        if(args.length != 1) {
+        if (args.length != 1) {
             System.out.println(Result.IO_ERROR);
             System.err.println(WRONG_ARGUMENT_NUMBER);
             return;

@@ -33,7 +33,7 @@ public enum LineType {
     private final Pattern pattern;
 
     /**
-     * @param regex   Regex to use to determine the type of a given line
+     * @param regex Regex to use to determine the type of a given line
      */
     LineType(String regex) {
         this.pattern = Pattern.compile(regex);
@@ -43,7 +43,7 @@ public enum LineType {
     /**
      * Returns the pattern that matches the LineType object
      *
-     * @return   LineType's regex pattern
+     * @return LineType's regex pattern
      */
     public Pattern getPattern() {
         return this.pattern;

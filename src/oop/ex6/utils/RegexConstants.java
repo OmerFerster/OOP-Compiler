@@ -53,12 +53,12 @@ public class RegexConstants {
     // [] = required
     private static final String VARIABLE =
             "\\s*" +                                       // Ignoring spaces at the beginning
-            OPTIONAL_FINAL + "%s\\s+" +                       // (final) [type]
-            IDENTIFIER +                                   // [name]
-            "(" + "\\s*,\\s*" + "(" + IDENTIFIER + ")" +   // [, another name
-            "|" +                                          // or
-            "\\s*=\\s*" + "(%s|" + IDENTIFIER + ")" + ")*" // = value]
-            + "(\\s*);\\s*";                               // ;
+                    OPTIONAL_FINAL + "%s\\s+" +                       // (final) [type]
+                    IDENTIFIER +                                   // [name]
+                    "(" + "\\s*,\\s*" + "(" + IDENTIFIER + ")" +   // [, another name
+                    "|" +                                          // or
+                    "\\s*=\\s*" + "(%s|" + IDENTIFIER + ")" + ")*" // = value]
+                    + "(\\s*);\\s*";                               // ;
 
     public static final String INT_VARIABLE = String.format(VARIABLE,
             Constants.INT_KEYWORD, INT_VALUE);
@@ -77,15 +77,15 @@ public class RegexConstants {
     // [] = required
     public static final String ASSIGNMENT =
             "\\s*" +                   // Ignoring spaces at the beginning
-            IDENTIFIER +               // [name]
-            "\\s*=\\s*" +              // =
-            ANY_VALUE +                // [value]
-            "(\\s*,\\s*" +             // Optionally, assign more variables
-            IDENTIFIER +
-            "\\s*=\\s*" +
-            ANY_VALUE +
-            "\\s*)*" +
-            "\\s*;\\s*";               // ;
+                    IDENTIFIER +               // [name]
+                    "\\s*=\\s*" +              // =
+                    ANY_VALUE +                // [value]
+                    "(\\s*,\\s*" +             // Optionally, assign more variables
+                    IDENTIFIER +
+                    "\\s*=\\s*" +
+                    ANY_VALUE +
+                    "\\s*)*" +
+                    "\\s*;\\s*";               // ;
 
 
     // Declares a regex that defines a block opener statement like if or while
@@ -100,7 +100,6 @@ public class RegexConstants {
             Constants.WHILE_KEYWORD);
 
 
-
     // Declares a regex that represents a method call, passing parameters of any type
     public static final String PASSED_PARAM_LIST = "\\(\\s*(()|" + ANY_VALUE +
             "(" + "\\s*,\\s*" + "(" + ANY_VALUE + "))*)\\s*\\)";
@@ -113,10 +112,10 @@ public class RegexConstants {
     // () (type variable, type variable)
     public static final String RECEIVED_PARAM_LIST =
             "\\(" +
-            "\\s*(()|" + OPTIONAL_FINAL + PARAMETER_TYPES + "\\s+" + IDENTIFIER +
-            "(" + "\\s*,\\s*" + "(" + OPTIONAL_FINAL + PARAMETER_TYPES + "\\s+" + IDENTIFIER +
-            "))*)\\s*" +
-            "\\)";
+                    "\\s*(()|" + OPTIONAL_FINAL + PARAMETER_TYPES + "\\s+" + IDENTIFIER +
+                    "(" + "\\s*,\\s*" + "(" + OPTIONAL_FINAL + PARAMETER_TYPES + "\\s+" + IDENTIFIER +
+                    "))*)\\s*" +
+                    "\\)";
 
     public static final String METHOD_DECLARATION = "\\s*" + RETURN_TYPES + "\\s*" + METHOD_IDENTIFIER +
             "\\s*" + RECEIVED_PARAM_LIST + "\\s*\\{\\s*";

@@ -1,6 +1,6 @@
 package oop.ex6.utils;
 
-public class Pair<K,V> {
+public class Pair<K, V> {
 
     private final K key;
     private final V value;

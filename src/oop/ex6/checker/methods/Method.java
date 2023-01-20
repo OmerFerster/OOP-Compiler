@@ -1,11 +1,9 @@
 package oop.ex6.checker.methods;
 
 import oop.ex6.checker.variables.Variable;
-import oop.ex6.checker.variables.VariableType;
 import oop.ex6.utils.Pair;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * A class that represents a single method object
@@ -24,14 +22,14 @@ public class Method {
 
 
     /**
-     * @return   The method's return type
+     * @return The method's return type
      */
     public ReturnType getReturnType() {
         return this.returnType;
     }
 
     /**
-     * @return   The method's parameter list with their respected name
+     * @return The method's parameter list with their respected name
      */
     public List<Pair<String, Variable>> getParameters() {
         return this.parameters;

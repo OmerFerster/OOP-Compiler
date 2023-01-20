@@ -15,9 +15,6 @@ import java.util.regex.Pattern;
 
 public class LineParser {
 
-    // TODO:
-    // make line parser non-static
-
     /**
      * Parses a single line into a list of created variables by reading the line's data.
      * It assumes line is indeed a VarDeclaration line.
@@ -113,23 +110,24 @@ public class LineParser {
         return methods.addMethod(methodName, returnType, parameters);
     }
 
-    public static void parseVarAssignmentLine(VariablesTable variables, String line) throws IllegalLineException {
+    public static void parseVarAssignmentLine(VariablesTable variables,
+                                              String line) throws IllegalLineException {
+
         // Splits the line into all equations, while removing commas between equations
-        // Example: "a = b, c = "1 2", e = 5"   ->  [a=b, c="1 2", e=5]
         String[] tokens = line.replaceAll("\\s*=\\s*", "=")
                 .split("(\\s*,\\s*|;)");
 
         // Loops over every equation and initialize correct variable if the value is okay
         // Meaning if value is of the same type/of an initialized variable with same type
-        for(String assignment : tokens) {
+        for (String assignment : tokens) {
             String assigned = assignment.split("=")[0];
             String value = assignment.split("=")[1];
 
             Variable variable = variables.getByName(assigned);
 
             VariableType assignmentType = getExpressionType(value, variables);
-            if(assignmentType == VariableType.IDENTIFIER) {
-                if(!variables.getByName(value).isInitialized()) {
+            if (assignmentType == VariableType.IDENTIFIER) {
+                if (!variables.getByName(value).isInitialized()) {
                     throw new IllegalLineException("variable is not initialized");
                     // todo: throw exception
                 }
@@ -141,25 +139,27 @@ public class LineParser {
         }
     }
 
-    public static void parseConditionalStatement(VariablesTable variables, String line) throws IllegalLineException{
+    public static void parseConditionalStatement(VariablesTable variables,
+                                                 String line) throws IllegalLineException {
+
         String[] conditions = line.split("(\\s+|if|while|\\(|\\)|\\|\\||\\&\\&|\\{)");
 
-        for(String condition : conditions) {
+        for (String condition : conditions) {
             VariableType variableType = getExpressionType(condition, variables);
 
-            if(variableType == VariableType.IDENTIFIER) {
-                if(!VariableType.BOOLEAN.canAccept(variables.getByName(condition).getType())) {
+            if (variableType == VariableType.IDENTIFIER) {
+                if (!VariableType.BOOLEAN.canAccept(variables.getByName(condition).getType())) {
                     // TODO: Throw exception
                     throw new IllegalLineException("variable type can't be converted to boolean");
                 }
-                if(!variables.getByName(condition).isInitialized()) {
+                if (!variables.getByName(condition).isInitialized()) {
                     throw new IllegalLineException("variable is not initialized");
                     // TODO: throw exception
                 }
                 continue;
             }
 
-            if(!VariableType.BOOLEAN.canAccept(variableType)) {
+            if (!VariableType.BOOLEAN.canAccept(variableType)) {
                 // TODO: Throw exception - wrong type
             }
         }
@@ -167,25 +167,26 @@ public class LineParser {
 
 
     public static void parseMethodCall(MethodsTable methods, VariablesTable variables, String line)
-            throws IllegalLineException{
+            throws IllegalLineException {
+
         String[] tokens = line.split("(\\s*\\(\\s*|\\s*,\\s*|\\s*\\)\\s*;\\s*)");
 
         Method method = methods.getByName(tokens[0]);
 
-        if(tokens.length - 1 != method.getParameters().size()) {
+        if (tokens.length - 1 != method.getParameters().size()) {
             throw new IllegalLineException("not enough parameters");
             // TODO: throw not enough parameters
         }
 
-        for(int i = 1; i < tokens.length; i++) {
-            Variable parameter = method.getParameters().get(i-1).getValue();
+        for (int i = 1; i < tokens.length; i++) {
+            Variable parameter = method.getParameters().get(i - 1).getValue();
 
             VariableType variableType = getExpressionType(tokens[i], variables);
 
-            if(variableType == VariableType.IDENTIFIER) {
+            if (variableType == VariableType.IDENTIFIER) {
                 Variable variable = variables.getByName(tokens[i]);
 
-                if(!variable.isInitialized()) {
+                if (!variable.isInitialized()) {
                     // TODO: throw uninitialized error
                     throw new IllegalLineException("Uninitialized parameter passed");
 
@@ -194,7 +195,7 @@ public class LineParser {
                 variableType = variable.getType();
             }
 
-            if(!parameter.getType().canAccept(variableType)) {
+            if (!parameter.getType().canAccept(variableType)) {
                 // TODO: throw not same type
                 throw new IllegalLineException("parameter of not same type");
             }
@@ -210,25 +211,23 @@ public class LineParser {
     private static Pattern identifierValuePattern = Pattern.compile(RegexConstants.IDENTIFIER);
 
     public static VariableType getExpressionType(String expression, VariablesTable table) {
-        if (intValuePattern.matcher(expression).matches()){
+        if (intValuePattern.matcher(expression).matches()) {
             return VariableType.INT;
-        } else if (doubleValuePattern.matcher(expression).matches()){
+        } else if (doubleValuePattern.matcher(expression).matches()) {
             return VariableType.DOUBLE;
-        } else if (charValuePattern.matcher(expression).matches()){
+        } else if (charValuePattern.matcher(expression).matches()) {
             return VariableType.CHAR;
-        } else if (stringValuePattern.matcher(expression).matches()){
+        } else if (stringValuePattern.matcher(expression).matches()) {
             return VariableType.STRING;
-        } else if (booleanValuePattern.matcher(expression).matches()){
+        } else if (booleanValuePattern.matcher(expression).matches()) {
             return VariableType.BOOLEAN;
-        } else if (identifierValuePattern.matcher(expression).matches()){
+        } else if (identifierValuePattern.matcher(expression).matches()) {
             return VariableType.IDENTIFIER;
         }
 
         // TODO: throw an exception
         return null;
     }
-
-
 
 
     /**

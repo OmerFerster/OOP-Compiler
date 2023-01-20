@@ -3,7 +3,6 @@ package oop.ex6.checker.methods;
 import oop.ex6.checker.ITable;
 import oop.ex6.checker.IllegalLineException;
 import oop.ex6.checker.variables.Variable;
-import oop.ex6.checker.variables.VariableType;
 import oop.ex6.utils.Pair;
 
 import java.util.*;
