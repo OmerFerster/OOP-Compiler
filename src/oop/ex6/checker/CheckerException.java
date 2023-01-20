@@ -1,6 +1,6 @@
 package oop.ex6.checker;
 
-public abstract class CheckerException extends Exception {
+public class CheckerException extends Exception {
 
     public CheckerException(String message) {
         super(message);

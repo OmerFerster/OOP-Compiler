@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,14 +36,22 @@ public class FileParser {
 
             while ((line = bufferedReader.readLine()) != null) {
                 // Splitting lines by \n and \r
-                for (String subLine : line.split("[\n\r]")) {
-                    this.lines.add(subLine.strip());
-                }
+                this.lines.addAll(Arrays.asList(line.split("[\n\r]")));
             }
         } catch (FileNotFoundException exception) {
             throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, sourceFile));
         } catch (IOException exception) {
             throw new IOException(String.format(IO_ERROR_MESSAGE, sourceFile));
+        }
+    }
+
+
+    /**
+     * Strips all the lines in the file
+     */
+    public void stripLines() {
+        for(int i = 0; i < lines.size(); i++) {
+            this.lines.set(i, this.lines.get(i).strip());
         }
     }
 
@@ -57,6 +66,21 @@ public class FileParser {
     }
 
     /**
+     * Advances the file to the next line
+     */
+    public void advance() {
+        this.currentLineIndex++;
+    }
+
+    /**
+     * Resets the line pointer back to the first line
+     */
+    public void reset() {
+        this.currentLineIndex = 0;
+    }
+
+
+    /**
      * Returns the current line in the file
      *
      * @return Current line
@@ -69,25 +93,16 @@ public class FileParser {
         return this.lines.get(this.currentLineIndex);
     }
 
+    /**
+     * Returns the previous line in the file
+     *
+     * @return Previous line
+     */
     public String getPreviousLine() {
         if (this.currentLineIndex <= 0) {
             return null;
         }
 
         return this.lines.get(this.currentLineIndex - 1);
-    }
-
-    /**
-     * Advances the file to the next line
-     */
-    public void advance() {
-        this.currentLineIndex++;
-    }
-
-    /**
-     * Resets the line pointer back to the first line
-     */
-    public void reset() {
-        this.currentLineIndex = 0;
     }
 }

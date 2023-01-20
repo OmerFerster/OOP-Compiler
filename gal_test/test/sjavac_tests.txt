@@ -4,7 +4,7 @@ test003.sjava 0 int member test with negative value
 test004.sjava 0 int member test with zero value
 test005.sjava 1 int member test with illegal value: double
 test006.sjava 1 int member test with illegal value: string1
-x test007.sjava 1 int member test with illegal value: string2
+test007.sjava 1 int member test with illegal value: string2
 test008.sjava 1 final int member test no value
 test009.sjava 0 final int member test with positive value
 

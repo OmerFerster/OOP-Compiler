@@ -25,15 +25,14 @@ public class TestsRunner {
             Checker checker = new Checker(fileParser);
             checker.check();
 
-            System.out.println(test.getName() + " finished with: " + Result.LEGAL.getCode());
+            System.out.println(test.getName().replaceAll("\\.sjava", "") + " 0");
+
+//            System.out.println(test.getName() + " finished with: " + Result.LEGAL.getCode());
         } catch(CheckerException exception) {
-            System.out.println(test.getName() + " finished with: " + Result.ILLEGAL.getCode());
-            System.err.println(exception.getMessage());
+            System.out.println(test.getName().replaceAll("\\.sjava", "") + " 1");
         } catch (IOException exception) {
-            System.out.println(test.getName() + " finished with: " + Result.IO_ERROR.getCode());
-            System.err.println(exception.getMessage());
+            System.out.println(test.getName().replaceAll("\\.sjava", "") + " 2");
         }
 
-        System.out.println("==========");
     }
 }

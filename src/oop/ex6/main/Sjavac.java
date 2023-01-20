@@ -24,11 +24,9 @@ public class Sjavac {
             new Checker(fileParser).check();
 
             System.out.println(Result.LEGAL.getCode());
-
         } catch (CheckerException exception) {
             System.out.println(Result.ILLEGAL.getCode());
             System.err.println(exception.getMessage());
-
         } catch (IOException exception) {
             System.out.println(Result.IO_ERROR.getCode());
             System.err.println(exception.getMessage());

@@ -1,5 +1,7 @@
 package oop.ex6.utils;
 
+import java.util.regex.Pattern;
+
 /**
  * A class that's used to store all constant regexes in the code
  */
@@ -119,4 +121,13 @@ public class RegexConstants {
 
     public static final String METHOD_DECLARATION = "\\s*" + RETURN_TYPES + "\\s*" + METHOD_IDENTIFIER +
             "\\s*" + RECEIVED_PARAM_LIST + "\\s*\\{\\s*";
+
+
+    public static final Pattern INT_VALUE_PATTERN = Pattern.compile(RegexConstants.INT_VALUE);
+    public static final Pattern DOUBLE_VALUE_PATTERN = Pattern.compile(RegexConstants.DOUBLE_VALUE);
+    public static final Pattern CHAR_VALUE_PATTERN = Pattern.compile(RegexConstants.CHAR_VALUE);
+    public static final Pattern STRING_VALUE_PATTERN = Pattern.compile(RegexConstants.STRING_VALUE);
+    public static final Pattern BOOLEAN_VALUE_PATTERN = Pattern.compile(RegexConstants.BOOLEAN_VALUE);
+    public static final Pattern IDENTIFIER_VALUE_PATTERN = Pattern.compile(RegexConstants.IDENTIFIER);
+
 }
