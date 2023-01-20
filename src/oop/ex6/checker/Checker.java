@@ -9,6 +9,9 @@ import oop.ex6.checker.tables.variables.VariableTable;
 import oop.ex6.parser.FileParser;
 import oop.ex6.utils.Messages;
 
+/**
+ * A class used to handle the whole process of checking whether given sjava code is valid
+ */
 public class Checker {
 
     private final VariableTable variables;
