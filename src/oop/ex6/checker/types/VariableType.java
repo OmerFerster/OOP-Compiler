@@ -14,7 +14,7 @@ public enum VariableType {
     STRING(Constants.STRING_KEYWORD),
     BOOLEAN(Constants.BOOLEAN_KEYWORD, INT, DOUBLE),
     CHAR(Constants.CHAR_KEYWORD),
-    IDENTIFIER(); // TODO might wanna delete this
+    IDENTIFIER();
 
 
     private final String declarator;
