@@ -45,6 +45,7 @@ public class Messages {
     public static final String ILLEGAL_SUBROUTINE_CLOSE =
             "A subroutine was closed without returning!";
 
+
     public static final String INVALID_AMOUNT_OF_ARGUMENTS =
             "A called subroutine didn't receive the correct number of arguments!";
     public static final String UNINITIALIZED_ARGUMENT_CALL =
@@ -57,8 +58,6 @@ public class Messages {
             "%s is an illegal condition!";
     public static final String UNINITIALIZED_VARIABLE_IN_CONDITION =
             "%s is an uninitialized variable!";
-
-
 
 
     public static final String SCOPE_NOT_CLOSED =
