@@ -11,6 +11,9 @@ import oop.ex6.utils.Pair;
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * A class that helps parsing lines within the sjava code
+ */
 public class LineParser {
 
     private final VariableTable variables;
@@ -152,7 +155,6 @@ public class LineParser {
             throw new ParseException(exception.getMessage(), exception);
         }
     }
-
 
 
     /**

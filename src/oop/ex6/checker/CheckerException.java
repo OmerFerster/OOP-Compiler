@@ -1,5 +1,8 @@
 package oop.ex6.checker;
 
+/**
+ * An exception class representing a checker exception
+ */
 public class CheckerException extends Exception {
 
     public CheckerException(String message) {
