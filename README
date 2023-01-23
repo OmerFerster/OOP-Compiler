@@ -68,27 +68,48 @@ The most two used regex expressions in our program are:
 
 
 Design Patterns:
-
-  - ITable<T>: A generic interface that describes A Table that contains T type objects.
-
   - State Design Pattern:
     - VariablesTable: When the state of the instance changes, the behaivor changes too.
       This is noticeable when opening a new scope, leading to next variables to be added
       to the scopes chain tables, and not the global table
 
   - Generics:
-    - We used generics to be able to re-use 
+    - We used generics to be able to re-use objects with different types of members.
+      For examples, in the ITable interface, we used generics to know what type of objects
+      we save in the table
 
   - Interfaces & Inheritance
     - We used interfaces and abstract classes (inheritance) to make sure we support polymorphism
+    - We also used inheritance with exceptions to be able to catch super types
+
+  - Enums
+    - We widely used enums to be able to handle different types of objects such as lines, return types etc.
+
+  - Why have we decided to not use other design patterns?
+    - Factory:
+      - We didn't need to use the factory design pattern because we don't have multiple classes
+        that inherit from a single class, and create objects of the different types
+    - Singleton:
+      - Since we want our code to follow the open-closed-principle, we decided to not limit any
+        class to have only a single instance. Therefore, using the singleton is redundant
+    - Memento:
+      - We didn't need to have to ability to revert to older versions or states, therefore,
+        the memento design pattern isn't necessary.
 
 
-  VariableTable implements ITable which describes A symbol Table for all the Variables in our code
-  separating by their scopes.
-  SubroutineTable implements ITable which describes A symbol Table for all the Subroutines in our code
-  for future use.
-  The ITable allow us to use polymorphism when reaching a new Variable / Subroutine we can add that object
-  to this fitting Table and..
+Other questions:
+  - How would you change your code to add new types of variables (float)?
+    - To add support to new types of variables, we would have to add a regex for the declaration
+      of that type, and also add a regex for the type itself (how it looks).
+      Then we would have to modify current regexes that use different types, and then add the new
+      type to the VariableType enum and update LineType accordingly
 
+  - Which extensions would you have to make in your code to support:
+    - Different return types:
+      - We would have to add the new return type to the ReturnType enum
 
-
+    - Classes:
+      - We would have to add the class declaration line to the list of regexes and LineType num
+      - We would have to modify the variables & subroutine tables to remember data on previous classes
+      - We would also have to modify the initial run-through, to add all classes and data to the tables
+        before parsing all lines
