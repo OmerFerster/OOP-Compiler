@@ -1,0 +1,3 @@
+String omer = "Hello World";
+int a = 3;
+a = omer;

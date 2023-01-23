@@ -1,0 +1,16 @@
+void foo(int a) {
+  int b = a;
+  if(b) {
+    goo(b);
+  }
+
+  return;
+}
+
+void goo(int b) {
+  if(b) {
+    int c = -100;
+  }
+
+  return;
+}

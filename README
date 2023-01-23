@@ -1,1 +1,94 @@
-VariableType enum
+lielamar
+omerferster
+
+
+Our Test Files:
+- test01.sjava: Checks basic declarations for non-final variables
+- test02.sjava: Checks that we can't pass something other than a variable or a value into a function (-b)
+- test03.sjava: Checks creation of double variables with '.' in the beginning or end
+- test04.sjava: Checks that we can't re-assign a final variable
+- test05.sjava: Checks that we can't assign a String into an integer
+- test06.sjava: Checks basic program flow & if conditions (with integers in the condition)
+- test07.sjava: Checks while and inner return
+- test08.sjava: Checks that we can't call functions with the wrong number of arguments
+- test09.sjava: Checks that we can't pass a character into an if
+- test10.sjava: Checks unique variable names
+- test11.sjava: Checks that we can't have a variable name being "_"
+- test12.sjava: Checks that we can't have a variable name starting with a digit
+- test13.sjava: Checks that we can't have a function return type being something other than void
+- test14.sjava: Checks that we can't return an object
+- test15.sjava: Checks that we can declare variables with the same names in different scopes
+- test16.sjava: Checks that we can compile a file with only empty lines and spaces
+- test17.sjava: Checks that we can't assign an integer into a String variable
+- test18.sjava: Checks that we can assign an integer into a double variable
+- test19.sjava: Checks that we can assign an integer and a double into a boolean variable
+- test20.sjava: Checks that we can't declare a method without "()"
+
+
+Tools used that were not taught:
+- We decided to use the java stream pipeline api (specifically filter and forEach) to easily
+  filter out specific variables and run a function only on them/
+  - The downsides of using the stream pipeline is harder to read code, but we only used 2
+    concatenation
+
+
+Exceptions:
+- We decided to create a base exception called CheckerException, which would be used as the parent
+  exception for every other exception type
+  - TypeException: An exception used to signify errors with illegal types or any other type error.
+    - TypeException is of type CheckerException, so we catch it using CheckerException
+  - TableException: An exception used to signify errors with the variables / subroutines tables
+    For example, a variable/method that was not found, already declared etc.
+    - TableException is of type CheckerException, so we catch it using CheckerException
+  - ParserException: An exception used to signify errors with the parsing process of a single line
+    For example, an illegal line or re-thrown other CheckerExceptions
+    - ParserException is of type CheckerException, so we catch it using CheckerException
+- We catch all exceptions in various places, but the main one being the Checker.java class,
+  which is then used to re-throw a base CheckerException for the main function to catch and tell
+  whether the code is invalid.
+- We've also utilized the messaging system to re-throw some messages up the chain, so we can output
+  an informative error
+
+* We decided to throw exceptions that aren't in the same folder as the throwing class.
+  We've allowed it in SubroutineTable and VariablesTable, as both are in sub-packages of the tables
+  package, and both use the TableException exception, which is in a shared parent package.
+
+
+Regex Expressions:
+The most two used regex expressions in our program are:
+- ANY_VALUE_REGEX (@see #RegexConstants.ANY_VALUE):
+  - This regex was used to accept any type of value.
+    It was very useful in places such as arguments, assignments, declarations etc.
+  - To prevent code duplication, this regex depends on previous variables for all types
+
+- IDENTIFIER_REGEX (@see #RegexConstants.IDENTIFIER):
+  - This regex was used for finding an Identifier variable in the code.
+    It was very useful in places like arguments, functions, if & while statements etc.
+    It was also used to find if the specific line is legal or not.
+
+
+Design Patterns:
+
+  - ITable<T>: A generic interface that describes A Table that contains T type objects.
+
+  - State Design Pattern:
+    - VariablesTable: When the state of the instance changes, the behaivor changes too.
+      This is noticeable when opening a new scope, leading to next variables to be added
+      to the scopes chain tables, and not the global table
+
+  - Generics:
+    - We used generics to be able to re-use 
+
+  - Interfaces & Inheritance
+    - We used interfaces and abstract classes (inheritance) to make sure we support polymorphism
+
+
+  VariableTable implements ITable which describes A symbol Table for all the Variables in our code
+  separating by their scopes.
+  SubroutineTable implements ITable which describes A symbol Table for all the Subroutines in our code
+  for future use.
+  The ITable allow us to use polymorphism when reaching a new Variable / Subroutine we can add that object
+  to this fitting Table and..
+
+
+

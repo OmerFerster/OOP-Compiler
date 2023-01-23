@@ -11,11 +11,6 @@ public class FileParserTest {
         try {
             FileParser fileParser = new FileParser(args[0]);
 
-//            while(fileParser.hasMoreLines()) {
-//                System.out.println(fileParser.getCurrentLine());
-//                fileParser.advance();
-//            }
-
             Checker checker = new Checker(fileParser);
             checker.check();
 

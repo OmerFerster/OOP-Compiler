@@ -1,0 +1,15 @@
+final String s = "This is a complicated string!";
+final char c = '-';
+
+void foo(String s, char c) {
+  if(true) {
+    String s = "yay";
+    char c = '6';
+
+    if(true) {
+      String s = "nop!";
+      char c = '5';
+    }
+  }
+  return;
+}

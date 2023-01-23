@@ -1,0 +1,16 @@
+int a;
+
+void foo(char c) {
+   a = 3;
+   if(a || 'a') {
+        return;
+   }
+   return;
+}
+
+void boo() {
+    if(a && 2) {
+        a = 8;
+    }
+    return;
+}

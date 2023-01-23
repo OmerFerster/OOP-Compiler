@@ -1,0 +1,6 @@
+int a,b;
+void foo(char c) {
+    a = 3;
+    b = "Hello";
+    return;
+}

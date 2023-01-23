@@ -1,0 +1,7 @@
+final int a = 5;
+int foo(int b, int c) {
+    if(a==b) {
+        return 1;
+    }
+    return a;
+}

@@ -1,0 +1,3 @@
+int a = -5;
+char c = 'y';
+String t = "Hello!";
